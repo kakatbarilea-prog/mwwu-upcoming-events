@@ -3,10 +3,128 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Make Wine With Us — Events</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<title>Make Wine With Us — Events (Sections Only)</title>
 
 <style>
+  :root{
+    --brand:#800080;      /* main brand purple */
+    --brand-2:#9a329a;    /* subtle gradient stop */
+    --ink:#2b2b2b;        /* body text */
+    --muted:#6b7280;      /* secondary text */
+    --bg:#ffffff;
+    --line:#e9e9ee;
+    --radius:14px;
+  }
+
+  /* Base */
+  *{box-sizing:border-box}
+  html,body{
+    margin:0;
+    font-family:"Segoe UI",system-ui,-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+  }
+  a{color:inherit;text-decoration:none}
+  .container{max-width:1200px;margin:0 auto;padding:0 16px}
+
+  /* Buttons (used in sections) */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    height:38px;padding:0 14px;border-radius:999px;border:1px solid transparent;
+    font-weight:700;font-size:15px;cursor:pointer;
+    transition:transform .06s ease, box-shadow .2s ease, filter .2s ease;
+    font-family:inherit;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{
+    background:linear-gradient(180deg,var(--brand),var(--brand-2));
+    color:#fff;box-shadow:0 6px 16px rgba(128,0,128,.25)
+  }
+  .btn.primary:hover{
+    background:linear-gradient(180deg,var(--brand-2),var(--brand));
+    box-shadow:0 8px 20px rgba(128,0,128,.35);
+    transform:translateY(-1px)
+  }
+  .btn.pill{ padding:9px 16px; border-radius:999px; }
+  .btn-sm{ font-size:14px; height:auto; line-height:1; }
+  .btn-soon{
+    background:#fff; color:var(--brand); border:1px solid #ead7f3;
+    box-shadow:0 4px 12px rgba(128,0,128,.12); text-decoration:none;
+  }
+  a:focus-visible,.btn:focus-visible{
+    outline:3px solid rgba(128,0,128,.35);outline-offset:2px;border-radius:12px
+  }
+
+  /* ===== EVENTS PAGE SECTIONS ===== */
+  .events-page{ padding:clamp(28px,4vw,44px) 0; background:#fff; }
+  .events-heading{
+    font-size: clamp(22px,3.2vw,34px);
+    font-weight:900; letter-spacing:.2px; color:#0f172a;
+    margin:0 0 18px;
+  }
+
+  /* 2-col layout: main list + aside */
+  .events-grid{
+    display:grid; gap:28px;
+    grid-template-columns: minmax(0,1.6fr) minmax(0,1fr);
+    align-items:start;
+  }
+  @media (max-width:980px){ .events-grid{ grid-template-columns:1fr; } }
+
+  /* Main event list */
+  .events-main{}
+
+  .event-card{
+    display:grid;
+    grid-template-columns: 220px 1fr auto;
+    gap:22px;
+    align-items:start;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,.06);
+    padding:18px;
+  }
+  @media (max-width:760px){ .event-card{ grid-template-columns:1fr; } }
+
+  .event-media{ border-radius:12px; overflow:hidden; }
+  .media-16x9{ position:relative; width:100%; padding-top:56.25%; background:#eee; }
+  .media-16x9 img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+
+  .event-title{ margin:0 0 8px; font-size:clamp(18px,2.2vw,22px); font-weight:800; color:#111827; }
+  .event-meta{ font-weight:700; color:var(--brand); margin:0 0 8px; }
+  .event-desc{ color:#4b5563; line-height:1.6; margin:0; }
+
+  /* Aside sections */
+  .events-aside{ display:grid; gap:22px; }
+  .side-card{
+    background:#fff; border:1px solid var(--line); border-radius:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,.06);
+    padding:18px;
+  }
+  .side-title{
+    margin:0 0 14px; font-size:18px; font-weight:900; color:#0f172a; text-transform:uppercase;
+    letter-spacing:.4px;
+  }
+
+  .side-row{
+    display:grid; gap:14px; grid-template-columns:150px 1fr;
+    align-items:center; padding:12px 0; border-bottom:1px solid var(--line);
+  }
+  .side-row:last-child{ border-bottom:0; }
+  @media (max-width:480px){ .side-row{ grid-template-columns:1fr; } }
+
+  .side-row__media{ border-radius:12px; overflow:hidden; }
+  .side-row__body{ display:flex; flex-direction:column; align-items:flex-start; gap:8px; }
+  .side-row__title{ margin:0; font-weight:800; color:#111827; }
+
+  .side-empty{
+    background:#faf7fb; border:1px dashed #ead7f3; color:#4b5563;
+    border-radius:12px; padding:14px; line-height:1.5;
+  }
+
+  /* Small utilities */
+  .stack-12 > * + *{ margin-top:12px; }
   :root{
     --brand:#800080;      /* main brand purple */
     --brand-2:#9a329a;    /* subtle gradient stop */
@@ -35,27 +153,58 @@
 
   /* Header */
   header{border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0;z-index:50}
-  .bar{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;padding:14px 0}
+  .bar{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;padding:14px 24px;max-width:none;width:100%;margin:0}
   .brand{display:flex;align-items:center;gap:12px;min-width:0}
   .brand img{height:56px;width:auto;display:block}
   nav{display:flex;align-items:center;justify-content:center}
-  .nav{display:flex;gap:24px;list-style:none;margin:0;padding:0;font-size:16px}
+  .nav{display:flex;list-style:none;margin:0;padding:0;font-size:16px;width:100%;justify-content:space-evenly;flex-wrap:nowrap;white-space:nowrap;gap:0}
   .nav a{color:#4b5563;font-weight:600}
- .nav a:hover,.nav a[aria-current="page"]{color:var(--brand)}
+  .nav a:hover{color:var(--brand)}
 
-/* --- Dropdowns --- */
-.nav li{ position:relative; }
+  /* Prevent nav items from shrinking; spacing absorbs resize */
+  .nav > li{flex:0 0 auto}
+
+  .actions{display:flex;align-items:center;gap:12px;white-space:nowrap}
+  .phone{display:flex;align-items:center;gap:8px;padding:8px 12px;border:none;border-radius:999px;font-weight:600;color:#1f2937;background:#fff}
+  .phone svg{width:16px;height:16px}
+  .social{display:flex;gap:8px}
+  .social a{width:34px;height:34px;border-radius:50%;border:none;display:inline-flex;align-items:center;justify-content:center}
+  .social a:hover{border-color:var(--brand)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;height:38px;padding:0 14px;border-radius:999px;border:1px solid transparent;font-weight:700;font-size:15px;cursor:pointer;transition:transform .04s ease, box-shadow .2s ease;font-family:inherit}
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{background:linear-gradient(180deg,var(--brand),var(--brand-2));color:#fff;box-shadow:0 6px 16px rgba(128,0,128,.25)}
+  .btn.primary:hover{background:linear-gradient(180deg,var(--brand-2),var(--brand));box-shadow:0 8px 20px rgba(128,0,128,.35);transform:translateY(-1px)}
+  .btn.ghost{background:#fff;border-color:var(--line);color:#1f2937}
+  .btn.ghost:hover{border-color:var(--brand);color:var(--brand)}
+  .hamburger{display:none}
+  #nav-toggle{display:none}
+  @media (max-width:980px){
+    .bar{grid-template-columns:auto auto 1fr;gap:10px}
+    .brand img{height:48px}
+    .hamburger{border:none;border-radius:10px;padding:8px 10px;background:#fff;cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:700;color:#374151}
+    nav{justify-content:flex-end}
+    .nav{position:fixed;inset:64px 16px auto 16px;flex-direction:column;gap:10px;padding:14px;border:none;background:#fff;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.08);display:none;z-index:60;/* undo desktop spread for mobile */width:auto;justify-content:flex-start;white-space:normal}
+    #nav-toggle:checked ~ nav .nav{display:flex}
+    .actions{gap:8px}
+    .phone{padding:6px 10px}
+    .btn{height:36px;padding:0 12px}
+  }
+  a:focus-visible,.btn:focus-visible,.hamburger:focus-visible,.phone:focus-visible{outline:3px solid rgba(128,0,128,.35);outline-offset:2px;border-radius:12px}
+
+
+/* --- Dropdowns (fixed) --- */
+.nav li{ position:relative; } /* keep this */
 
 .subnav{
   position:absolute;
-  top:100%;
+  top:100%;            /* was: calc(100% + 10px) → remove the gap */
   left:0;
   min-width:220px;
   background:#fff;
-  border:1px solid var(--line);
+  border:none;
   border-radius:12px;
   box-shadow:0 14px 36px rgba(0,0,0,.12);
-  padding:8px;              /* visual breathing room */
+  padding:8px;         /* gives a visual offset without creating a real gap */
   opacity:0;
   transform:translateY(6px);
   pointer-events:none;
@@ -63,11 +212,13 @@
   z-index:70;
 }
 
-/* Invisible bridge to prevent hover flicker */
+/* Invisible hover bridge to prevent flicker when moving down */
 .subnav::before{
   content:"";
-  position:absolute; left:0; right:0;
-  top:-8px; height:8px;
+  position:absolute;
+  left:0; right:0;
+  top:-8px;            /* sits above the submenu */
+  height:8px;          /* fills the 'gap' so hover doesn't drop */
 }
 
 .has-sub:hover > .subnav,
@@ -90,7 +241,7 @@
   color:var(--brand);
 }
 
-/* Mobile: show sub-items inline inside the drawer */
+/* Mobile: keep as list items */
 @media (max-width:980px){
   .nav .subnav{
     position:static;
@@ -104,148 +255,6 @@
   .nav .subnav::before{ display:none; }
   .nav .subnav a{ padding:8px 10px 8px 14px; }
 }
-
-
-  .actions{display:flex;align-items:center;gap:12px;white-space:nowrap}
-  .phone{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);border-radius:999px;font-weight:600;color:#1f2937;background:#fff}
-  .phone svg{width:16px;height:16px}
-  .social{display:flex;gap:8px}
-  .social a{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center}
-  .social a:hover{border-color:var(--brand)}
-  .btn{display:inline-flex;align-items:center;justify-content:center;height:38px;padding:0 14px;border-radius:999px;border:1px solid transparent;font-weight:700;font-size:15px;cursor:pointer;transition:transform .04s ease, box-shadow .2s ease;font-family:inherit}
-  .btn:active{transform:translateY(1px)}
-  .btn.primary{background:linear-gradient(180deg,var(--brand),var(--brand-2));color:#fff;box-shadow:0 6px 16px rgba(128,0,128,.25)}
-  .btn.primary:hover{background:linear-gradient(180deg,var(--brand-2),var(--brand));box-shadow:0 8px 20px rgba(128,0,128,.35);transform:translateY(-1px)}
-  .btn.ghost{background:#fff;border-color:var(--line);color:#1f2937}
-  .btn.ghost:hover{border-color:var(--brand);color:var(--brand)}
-  .hamburger{display:none}
-  #nav-toggle{display:none}
-  @media (max-width:980px){
-    .bar{grid-template-columns:auto auto 1fr;gap:10px}
-    .brand img{height:48px}
-    .hamburger{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:#fff;cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:700;color:#374151}
-    nav{justify-content:flex-end}
-    .nav{position:fixed;inset:64px 16px auto 16px;flex-direction:column;gap:10px;padding:14px;border:1px solid var(--line);background:#fff;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.08);display:none;z-index:60}
-    #nav-toggle:checked ~ nav .nav{display:flex}
-    .actions{gap:8px}
-    .phone{padding:6px 10px}
-    .btn{height:36px;padding:0 12px}
-  }
-  a:focus-visible,.btn:focus-visible,.hamburger:focus-visible,.phone:focus-visible{outline:3px solid rgba(128,0,128,.35);outline-offset:2px;border-radius:12px}
-
-/* ===== EVENTS PAGE (no header/footer styles here) ===== */
-
-.events-page{ padding:clamp(28px,4vw,44px) 0; background:#fff; }
-.events-heading{
-  font-size: clamp(22px,3.2vw,34px);
-  font-weight:900; letter-spacing:.2px; color:#0f172a;
-  margin:0 0 18px;
-}
-
-/* 2-col layout: main list + aside */
-.events-grid{
-  display:grid; gap:28px;
-  grid-template-columns: minmax(0,1.6fr) minmax(0,1fr);
-  align-items:start;
-}
-@media (max-width:980px){ .events-grid{ grid-template-columns:1fr; } }
-
-/* ===== Main event list ===== */
-.event-card{
-  display:grid;
-  grid-template-columns: 220px 1fr auto;
-  gap:22px; 
-  align-items:start;   /* top-aligns image, text, and button */
-  background:#fff; 
-  border:1px solid var(--line); 
-  border-radius:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,.06);
-  padding:18px;
-}
-
-
-@media (max-width:760px){ .event-card{ grid-template-columns:1fr; } }
-
-.event-media{ border-radius:12px; overflow:hidden; }
-.media-16x9{ position:relative; width:100%; padding-top:56.25%; background:#eee; }
-.media-16x9 img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
-
-.event-title{ margin:0 0 8px; font-size:clamp(18px,2.2vw,22px); font-weight:800; color:#111827; }
-.event-meta{ font-weight:700; color:var(--brand); margin:0 0 8px; }
-.event-desc{ color:#4b5563; line-height:1.6; margin:0; }
-
-/* ===== Aside sections ===== */
-.events-aside{ display:grid; gap:22px; }
-.side-card{
-  background:#fff; border:1px solid var(--line); border-radius:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,.06);
-  padding:18px;
-}
-.side-title{
-  margin:0 0 14px; font-size:18px; font-weight:900; color:#0f172a; text-transform:uppercase;
-  letter-spacing:.4px;
-}
-
-/* Row layout shared by Tasting + For Wine Makers */
-.side-row{
-  display:grid; gap:14px; grid-template-columns: 150px 1fr;
-  align-items:center; padding:12px 0; border-bottom:1px solid var(--line);
-}
-.side-row:last-child{ border-bottom:0; }
-@media (max-width:480px){ .side-row{ grid-template-columns:1fr; } }
-
-.side-row__media{ border-radius:12px; overflow:hidden; }
-.side-row__body {
-  display: flex;
-  flex-direction: column;  /* stack content vertically */
-  align-items: flex-start; /* align left */
-  gap: 8px;                /* space between title and button */
-}
-.side-row__title {
-  margin: 0;
-  font-weight: 800;
-  color: #111827;
-}
-
-
-
-/* Empty state for Special Events */
-.side-empty{
-  background:#faf7fb; border:1px dashed #ead7f3; color:#4b5563;
-  border-radius:12px; padding:14px; line-height:1.5;
-}
-
-/* ===== Controls: buttons & chips ===== */
-.btn.primary.pill{
-  border-radius:999px; padding:9px 16px; border:1px solid transparent;
-  background:linear-gradient(180deg,var(--brand),var(--brand-2)); color:#fff;
-  box-shadow:0 6px 16px rgba(128,0,128,.20);
-  transition:transform .06s ease, box-shadow .2s ease, filter .2s ease;
-}
-.btn.primary.pill:hover{
-  transform:translateY(-1px);
-  box-shadow:0 10px 22px rgba(128,0,128,.28);
-  filter:saturate(1.05);
-}
-.btn-sm{ font-size:14px; height:auto; line-height:1; }
-
-/* Clickable "Dates Coming Soon" button (light brand look) */
-.btn-soon{
-  background: #fff;
-  color: var(--brand);
-  border: 1px solid #ead7f3;
-  box-shadow: 0 4px 12px rgba(128,0,128,.12);
-  text-decoration: none;     /* ensure no underline */
-}
-
-
-/* optional: pill sizing helper if you want a consistent pill feel everywhere */
-.btn.pill{ padding: 9px 16px; border-radius: 999px; }
-
-
-
-/* Small utilities */
-.stack-12 > * + *{ margin-top:12px; }
 
 
 
@@ -274,19 +283,19 @@
   .footer-bottom-inner{display:flex;align-items:center;justify-content:space-between;gap:20px}
   .footer-bottom a{color:#999;margin-left:14px}
   .footer-bottom a:hover{color:#fff}
+
 </style>
 </head>
 <body>
-
 <!-- ===== Announcement ===== -->
 <div class="announce" role="region" aria-label="Announcement">
   <div class="container announce-inner">
     <div>Congratulations to our talented winemakers—medal winners at the 2025 Garden State Amateur Wine Challenge, including a <strong>“Best Red”</strong> gold honor!</div>
-    <div><a href="#">Already have an account? Log in</a></div>
+    <div><a href="https://makewinewithus.com/login">Already have an account? Log in</a></div>
   </div>
 </div>
 
-<!-- ===== Header (same as home) ===== -->
+<!-- ===== Header ===== -->
 <header>
   <div class="container bar">
     <a class="brand" href="/" aria-label="Make Wine With Us — Home">
@@ -296,35 +305,35 @@
     <label class="hamburger" for="nav-toggle" aria-label="Toggle menu">☰ Menu</label>
     <input id="nav-toggle" type="checkbox" aria-hidden="true"/>
 
-    <nav aria-label="Primary">
-<ul class="nav" id="nav">
-  <!-- Winemaking Process + submenu -->
-  <li class="has-sub">
-    <a href="/process">Winemaking Process</a>
-    <div class="subnav" role="menu">
-      <a href="/wines-you-can-make" role="menuitem">Wines You Can Make</a>
-      <a href="/label-making" role="menuitem">Label Making</a>
-    </div>
-  </li>
+<nav aria-label="Primary">
+  <ul class="nav" id="nav">
+    <!-- Winemaking Process + submenu -->
+    <li class="has-sub">
+      <a href="https://makewinewithus.com/winemaking-process">Winemaking Process</a>
+      <div class="subnav" role="menu">
+        <a href="https://makewinewithus.com/new-product-list" role="menuitem">Wines You Can Make</a>
+        <a href="https://makewinewithus.com/design-your-custom-bottle" role="menuitem">Label Making</a>
+      </div>
+    </li>
 
-  <li><a href="/regions">Regions</a></li>
-  <li><a href="/about">About</a></li>
-  <li><a href="/faqs">FAQs</a></li>
+    <li><a href="https://makewinewithus.com/region">Regions</a></li>
+    <li><a href="https://makewinewithus.com/about">About</a></li>
+    <li><a href="https://makewinewithus.com/faq-s">FAQs</a></li>
 
-  <!-- Events + submenu -->
-  <li class="has-sub">
-    <a href="/events">Events</a>
-    <div class="subnav" role="menu">
-      <a href="/events/private" role="menuitem">Private Events</a>
-      <a href="/events/upcoming" role="menuitem">Upcoming Events</a>
-    </div>
-  </li>
+    <!-- Events + submenu -->
+    <li class="has-sub">
+      <a href="https://makewinewithus.com/upcoming-events" aria-current="page">Events</a>
+      <div class="subnav" role="menu">
+        <a href="https://makewinewithus.com/private-events" role="menuitem">Private Events</a>
+        <a href="https://makewinewithus.com/upcoming-events" role="menuitem">Upcoming Events</a>
+      </div>
+    </li>
 
-  <li><a href="/contact">Contact</a></li>
-</ul>
+    <li><a href="https://makewinewithus.com/contact">Contact</a></li>
+  </ul>
+</nav>
 
 
-    </nav>
 
     <div class="actions">
       <a class="phone" href="tel:+12018769463" aria-label="Call Make Wine With Us">
@@ -339,13 +348,14 @@
         <a href="https://www.instagram.com/makewinewithus/" aria-label="Instagram" title="Instagram" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3zm5 3.5A5.5 5.5 0 1 1 6.5 13 5.5 5.5 0 0 1 12 7.5m0 2A3.5 3.5 0 1 0 15.5 13 3.5 3.5 0 0 0 12 9.5m6.25-3.5a1.25 1.25 0 1 1-1.25 1.25A1.25 1.25 0 0 1 18.25 6z"/></svg>
         </a>
-      </div>
-
-      <a class="btn ghost" href="#">Create an Account</a>
-      <a class="btn primary" href="#">Make Wine Now</a>
+      </div><a class="btn primary" href="https://makewinewithus.com/create-account">Make Wine Now</a>
     </div>
   </div>
 </header>
+
+
+
+
 
 <main class="events-page">
   <div class="container">
@@ -381,7 +391,7 @@
 
       <!-- RIGHT: Aside sections -->
       <aside class="events-aside">
-        <!-- Tasting Events (same layout as For Wine Makers) -->
+        <!-- Tasting Events -->
         <section class="side-card">
           <h3 class="side-title">Tasting Events</h3>
 
@@ -461,19 +471,15 @@
       </aside>
     </div>
   </div>
-</main>
-
-
-
-<!-- ===== Footer (same as home, with FB + IG only) ===== -->
+<!-- ===== Footer ===== -->
 <footer class="site-footer">
   <div class="container footer-grid">
     <div class="footer-col">
       <h3 class="foot-title">About Make Wine With Us</h3>
       <p class="footer-text">
-        Craft small-batch wines from premium grapes with guidance from American Wine Society instructors. Choose, crush, age, and bottle — and take your vintage home.
+        Enjoy a unique winemaking experience - craft your own wine from premium grapes with guidance from our expert staff. Aged to perfection over a 9-month period, your wine is then bottled by you and taken home to savor and share.
       </p>
-      <a href="#" class="btn primary footer-cta">Become a Winemaker</a>
+      <a href="https://makewinewithus.com/create-account" class="btn primary footer-cta">Become a Winemaker</a>
       <div class="footer-social">
         <a href="https://www.instagram.com/makewinewithus/" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
         <a href="https://www.facebook.com/MakeWineWithUs" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -483,11 +489,11 @@
     <div class="footer-col">
       <h3 class="foot-title">Explore</h3>
       <ul class="foot-links">
-        <li><a href="#">About</a></li><li><a href="#">Winemaking Process</a></li>
-        <li><a href="#">Wines You Can Make</a></li><li><a href="#">Regions</a></li>
-        <li><a href="#">Blog</a></li><li><a href="#">FAQs</a></li>
-        <li><a href="#">Events</a></li><li><a href="#">Private Events</a></li>
-        <li><a href="#">Contact</a></li>
+        <li><a href="https://makewinewithus.com/about">About</a></li><li><a href="https://makewinewithus.com/winemaking-process">Winemaking Process</a></li>
+        <li><a href="https://makewinewithus.com/new-product-list">Wines You Can Make</a></li><li><a href="https://makewinewithus.com/region">Regions</a></li>
+        <li><a href="https://makewinewithus.com/blog">Blog</a></li><li><a href="https://makewinewithus.com/faq-s">FAQs</a></li>
+        <li><a href="https://makewinewithus.com/upcoming-events">Events</a></li><li><a href="https://makewinewithus.com/private-events">Private Events</a></li>
+        <li><a href="https://makewinewithus.com/contact">Contact</a></li>
       </ul>
     </div>
 
@@ -500,7 +506,7 @@
       </ul>
       <div class="hours">
         <span class="hours-label">Hours</span>
-        <span class="hours-value">Mon–Fri 12–8pm · Sat 10–6pm</span>
+        <span class="hours-value">Closed today</span>
       </div>
     </div>
   </div>
@@ -508,18 +514,93 @@
   <div class="footer-bottom">
     <div class="container footer-bottom-inner">
       <p>© 2025 Make Wine With Us. All rights reserved.</p>
-      <div class="foot-legal"><a href="#">Privacy</a><a href="#">Terms</a></div>
+      <div class="foot-legal"><a href="https://makewinewithus.com/privacy-policy">Privacy</a><a href="https://makewinewithus.com/terms-of-service">Terms</a></div>
     </div>
   </div>
 </footer>
 
+</main>
+
 </body>
 </html>
 
+<script>
+// Dynamic business hours (America/New_York)
+(function(){
+  const tz = 'America/New_York';
+  // 0=Sun..6=Sat
+  const schedule = [
+    null,                                   // Sun - Closed
+    null,                                   // Mon - Closed
+    {open:[13,0], close:[17,0]},            // Tue 1pm–5pm
+    {open:[13,0], close:[18,0]},            // Wed 1pm–6pm
+    {open:[13,0], close:[18,0]},            // Thu 1pm–6pm
+    {open:[13,0], close:[18,0]},            // Fri 1pm–6pm
+    null                                    // Sat - Closed
+  ];
+  const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
+  function getParts(d){
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: tz, weekday:'short', year:'numeric', month:'2-digit', day:'2-digit',
+      hour:'2-digit', minute:'2-digit', hour12:false
+    }).formatToParts(d);
+    const map = {};
+    for(const p of parts) map[p.type] = p.value;
+    const dayIdx = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(map.weekday);
+    return { dayIdx, hour:parseInt(map.hour,10), minute:parseInt(map.minute,10) };
+  }
 
+  function fmtTime([h,m]){
+    const ampm = h>=12 ? 'PM' : 'AM';
+    const h12 = ((h+11)%12)+1;
+    const mm = String(m).padStart(2,'0');
+    return `${h12}:${mm} ${ampm}`;
+  }
 
+  function nextOpenFrom(idx){
+    for(let i=1;i<=7;i++){
+      const n = (idx + i) % 7;
+      if (schedule[n]) return {dayIdx:n, opening:schedule[n].open};
+    }
+    return null;
+  }
 
+  const nowParts = getParts(new Date());
+  const target = document.querySelector('.hours .hours-value');
+  if(!target){ return; }
 
+  const today = schedule[nowParts.dayIdx];
+  if(!today){
+    // Closed all day
+    target.textContent = 'Closed today';
+    return;
+  }
 
+  const nowMin = nowParts.hour*60 + nowParts.minute;
+  const openMin = today.open[0]*60 + today.open[1];
+  const closeMin = today.close[0]*60 + today.close[1];
 
+  if(nowMin < openMin){
+    // Opens later today
+    target.textContent = `Closed · Opens at ${fmtTime(today.open)}`;
+  } else if(nowMin >= openMin && nowMin < closeMin){
+    // Open now
+    target.textContent = `Open now · Closes at ${fmtTime(today.close)}`;
+  } else {
+    // After closing
+    const next = nextOpenFrom(nowParts.dayIdx);
+    if(next){
+      const tomorrowIdx = (nowParts.dayIdx + 1) % 7;
+      if(next.dayIdx === tomorrowIdx){
+        target.textContent = `Closed · Opens tomorrow at ${fmtTime(next.opening)}`;
+      } else {
+        // Fallback for multi-day gaps (e.g., weekend)
+        target.textContent = `Closed · Opens ${dayNames[next.dayIdx]} at ${fmtTime(next.opening)}`;
+      }
+    } else {
+      target.textContent = 'Closed today';
+    }
+  }
+})();
+</script>
