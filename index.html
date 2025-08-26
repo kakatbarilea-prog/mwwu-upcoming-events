@@ -41,7 +41,71 @@
   nav{display:flex;align-items:center;justify-content:center}
   .nav{display:flex;gap:24px;list-style:none;margin:0;padding:0;font-size:16px}
   .nav a{color:#4b5563;font-weight:600}
-  .nav a:hover,.nav a[aria-current="page"]{color:var(--brand)}
+ .nav a:hover,.nav a[aria-current="page"]{color:var(--brand)}
+
+/* --- Dropdowns --- */
+.nav li{ position:relative; }
+
+.subnav{
+  position:absolute;
+  top:100%;
+  left:0;
+  min-width:220px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:12px;
+  box-shadow:0 14px 36px rgba(0,0,0,.12);
+  padding:8px;              /* visual breathing room */
+  opacity:0;
+  transform:translateY(6px);
+  pointer-events:none;
+  transition:opacity .15s ease, transform .15s ease;
+  z-index:70;
+}
+
+/* Invisible bridge to prevent hover flicker */
+.subnav::before{
+  content:"";
+  position:absolute; left:0; right:0;
+  top:-8px; height:8px;
+}
+
+.has-sub:hover > .subnav,
+.has-sub:focus-within > .subnav{
+  opacity:1;
+  transform:translateY(0);
+  pointer-events:auto;
+}
+
+.subnav a{
+  display:block;
+  padding:9px 10px;
+  border-radius:8px;
+  color:#374151;
+  font-weight:600;
+  white-space:nowrap;
+}
+.subnav a:hover{
+  background:#faf7fb;
+  color:var(--brand);
+}
+
+/* Mobile: show sub-items inline inside the drawer */
+@media (max-width:980px){
+  .nav .subnav{
+    position:static;
+    border:0;
+    box-shadow:none;
+    opacity:1;
+    transform:none;
+    pointer-events:auto;
+    padding:6px 0 0;
+  }
+  .nav .subnav::before{ display:none; }
+  .nav .subnav a{ padding:8px 10px 8px 14px; }
+}
+
+
   .actions{display:flex;align-items:center;gap:12px;white-space:nowrap}
   .phone{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);border-radius:999px;font-weight:600;color:#1f2937;background:#fff}
   .phone svg{width:16px;height:16px}
@@ -233,14 +297,33 @@
     <input id="nav-toggle" type="checkbox" aria-hidden="true"/>
 
     <nav aria-label="Primary">
-      <ul class="nav" id="nav">
-        <li><a href="#">Winemaking Process</a></li>
-        <li><a href="#">Regions</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">FAQs</a></li>
-        <li><a href="#" aria-current="page">Events</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
+<ul class="nav" id="nav">
+  <!-- Winemaking Process + submenu -->
+  <li class="has-sub">
+    <a href="/process">Winemaking Process</a>
+    <div class="subnav" role="menu">
+      <a href="/wines-you-can-make" role="menuitem">Wines You Can Make</a>
+      <a href="/label-making" role="menuitem">Label Making</a>
+    </div>
+  </li>
+
+  <li><a href="/regions">Regions</a></li>
+  <li><a href="/about">About</a></li>
+  <li><a href="/faqs">FAQs</a></li>
+
+  <!-- Events + submenu -->
+  <li class="has-sub">
+    <a href="/events">Events</a>
+    <div class="subnav" role="menu">
+      <a href="/events/private" role="menuitem">Private Events</a>
+      <a href="/events/upcoming" role="menuitem">Upcoming Events</a>
+    </div>
+  </li>
+
+  <li><a href="/contact">Contact</a></li>
+</ul>
+
+
     </nav>
 
     <div class="actions">
@@ -432,6 +515,8 @@
 
 </body>
 </html>
+
+
 
 
 
