@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Make Wine With Us — Events</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+  :root{
+    --brand:#800080;      /* main brand purple */
+    --brand-2:#9a329a;    /* subtle gradient stop */
+    --ink:#2b2b2b;        /* body text */
+    --muted:#6b7280;      /* secondary text */
+    --bg:#ffffff;
+    --line:#e9e9ee;
+    --radius:14px;
+  }
+
+  /* Base */
+  *{box-sizing:border-box}
+  html,body{
+    margin:0;
+    font-family:"Segoe UI",system-ui,-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+  }
+  a{color:inherit;text-decoration:none}
+  .container{max-width:1200px;margin:0 auto;padding:0 16px}
+
+  /* Announcement */
+  .announce{background:var(--brand);color:#fff;font-size:14px;line-height:1.3}
+  .announce-inner{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:10px 0}
+  .announce a{color:#fff;text-decoration:underline}
+
+  /* Header */
+  header{border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0;z-index:50}
+  .bar{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;padding:14px 0}
+  .brand{display:flex;align-items:center;gap:12px;min-width:0}
+  .brand img{height:56px;width:auto;display:block}
+  nav{display:flex;align-items:center;justify-content:center}
+  .nav{display:flex;gap:24px;list-style:none;margin:0;padding:0;font-size:16px}
+  .nav a{color:#4b5563;font-weight:600}
+  .nav a:hover,.nav a[aria-current="page"]{color:var(--brand)}
+  .actions{display:flex;align-items:center;gap:12px;white-space:nowrap}
+  .phone{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);border-radius:999px;font-weight:600;color:#1f2937;background:#fff}
+  .phone svg{width:16px;height:16px}
+  .social{display:flex;gap:8px}
+  .social a{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center}
+  .social a:hover{border-color:var(--brand)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;height:38px;padding:0 14px;border-radius:999px;border:1px solid transparent;font-weight:700;font-size:15px;cursor:pointer;transition:transform .04s ease, box-shadow .2s ease;font-family:inherit}
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{background:linear-gradient(180deg,var(--brand),var(--brand-2));color:#fff;box-shadow:0 6px 16px rgba(128,0,128,.25)}
+  .btn.primary:hover{background:linear-gradient(180deg,var(--brand-2),var(--brand));box-shadow:0 8px 20px rgba(128,0,128,.35);transform:translateY(-1px)}
+  .btn.ghost{background:#fff;border-color:var(--line);color:#1f2937}
+  .btn.ghost:hover{border-color:var(--brand);color:var(--brand)}
+  .hamburger{display:none}
+  #nav-toggle{display:none}
+  @media (max-width:980px){
+    .bar{grid-template-columns:auto auto 1fr;gap:10px}
+    .brand img{height:48px}
+    .hamburger{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:#fff;cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:700;color:#374151}
+    nav{justify-content:flex-end}
+    .nav{position:fixed;inset:64px 16px auto 16px;flex-direction:column;gap:10px;padding:14px;border:1px solid var(--line);background:#fff;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.08);display:none;z-index:60}
+    #nav-toggle:checked ~ nav .nav{display:flex}
+    .actions{gap:8px}
+    .phone{padding:6px 10px}
+    .btn{height:36px;padding:0 12px}
+  }
+  a:focus-visible,.btn:focus-visible,.hamburger:focus-visible,.phone:focus-visible{outline:3px solid rgba(128,0,128,.35);outline-offset:2px;border-radius:12px}
+
+/* ===== EVENTS PAGE (no header/footer styles here) ===== */
+
+.events-page{ padding:clamp(28px,4vw,44px) 0; background:#fff; }
+.events-heading{
+  font-size: clamp(22px,3.2vw,34px);
+  font-weight:900; letter-spacing:.2px; color:#0f172a;
+  margin:0 0 18px;
+}
+
+/* 2-col layout: main list + aside */
+.events-grid{
+  display:grid; gap:28px;
+  grid-template-columns: minmax(0,1.6fr) minmax(0,1fr);
+  align-items:start;
+}
+@media (max-width:980px){ .events-grid{ grid-template-columns:1fr; } }
+
+/* ===== Main event list ===== */
+.event-card{
+  display:grid;
+  grid-template-columns: 220px 1fr auto;
+  gap:22px; 
+  align-items:start;   /* top-aligns image, text, and button */
+  background:#fff; 
+  border:1px solid var(--line); 
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+  padding:18px;
+}
+
+
+@media (max-width:760px){ .event-card{ grid-template-columns:1fr; } }
+
+.event-media{ border-radius:12px; overflow:hidden; }
+.media-16x9{ position:relative; width:100%; padding-top:56.25%; background:#eee; }
+.media-16x9 img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+
+.event-title{ margin:0 0 8px; font-size:clamp(18px,2.2vw,22px); font-weight:800; color:#111827; }
+.event-meta{ font-weight:700; color:var(--brand); margin:0 0 8px; }
+.event-desc{ color:#4b5563; line-height:1.6; margin:0; }
+
+/* ===== Aside sections ===== */
+.events-aside{ display:grid; gap:22px; }
+.side-card{
+  background:#fff; border:1px solid var(--line); border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+  padding:18px;
+}
+.side-title{
+  margin:0 0 14px; font-size:18px; font-weight:900; color:#0f172a; text-transform:uppercase;
+  letter-spacing:.4px;
+}
+
+/* Row layout shared by Tasting + For Wine Makers */
+.side-row{
+  display:grid; gap:14px; grid-template-columns: 150px 1fr;
+  align-items:center; padding:12px 0; border-bottom:1px solid var(--line);
+}
+.side-row:last-child{ border-bottom:0; }
+@media (max-width:480px){ .side-row{ grid-template-columns:1fr; } }
+
+.side-row__media{ border-radius:12px; overflow:hidden; }
+.side-row__body {
+  display: flex;
+  flex-direction: column;  /* stack content vertically */
+  align-items: flex-start; /* align left */
+  gap: 8px;                /* space between title and button */
+}
+.side-row__title {
+  margin: 0;
+  font-weight: 800;
+  color: #111827;
+}
+
+
+
+/* Empty state for Special Events */
+.side-empty{
+  background:#faf7fb; border:1px dashed #ead7f3; color:#4b5563;
+  border-radius:12px; padding:14px; line-height:1.5;
+}
+
+/* ===== Controls: buttons & chips ===== */
+.btn.primary.pill{
+  border-radius:999px; padding:9px 16px; border:1px solid transparent;
+  background:linear-gradient(180deg,var(--brand),var(--brand-2)); color:#fff;
+  box-shadow:0 6px 16px rgba(128,0,128,.20);
+  transition:transform .06s ease, box-shadow .2s ease, filter .2s ease;
+}
+.btn.primary.pill:hover{
+  transform:translateY(-1px);
+  box-shadow:0 10px 22px rgba(128,0,128,.28);
+  filter:saturate(1.05);
+}
+.btn-sm{ font-size:14px; height:auto; line-height:1; }
+
+/* Clickable "Dates Coming Soon" button (light brand look) */
+.btn-soon{
+  background: #fff;
+  color: var(--brand);
+  border: 1px solid #ead7f3;
+  box-shadow: 0 4px 12px rgba(128,0,128,.12);
+  text-decoration: none;     /* ensure no underline */
+}
+
+
+/* optional: pill sizing helper if you want a consistent pill feel everywhere */
+.btn.pill{ padding: 9px 16px; border-radius: 999px; }
+
+
+
+/* Small utilities */
+.stack-12 > * + *{ margin-top:12px; }
+
+
+
+  /* Footer (same look you approved) */
+  .site-footer{background:#111;color:#ddd;font-size:15px;line-height:1.6;padding-top:50px}
+  .footer-grid{display:grid;gap:40px;grid-template-columns: 1.2fr 1fr 1fr}
+  @media(max-width:900px){ .footer-grid{grid-template-columns:1fr 1fr} }
+  @media(max-width:640px){ .footer-grid{grid-template-columns:1fr} }
+  .foot-title{color:#fff;font-weight:800;margin:0 0 12px;font-size:16px;text-transform:uppercase;position:relative}
+  .foot-title::after{content:"";display:block;width:40px;height:2px;background:var(--brand);margin-top:6px}
+  .footer-text{margin-bottom:14px;max-width:500px;color:#ccc}
+  .footer-cta{margin-top:6px;display:inline-block;font-size:14px;padding:8px 18px}
+  .footer-social{margin-top:16px;display:flex;gap:12px}
+  .footer-social a{width:34px;height:34px;border-radius:50%;background:#222;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:15px}
+  .footer-social a:hover{background:var(--brand);color:#fff}
+  .foot-links{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:8px 24px}
+  .foot-links a{color:#ddd;font-weight:500}
+  .foot-links a:hover{color:#fff}
+  .contact-list{list-style:none;padding:0;margin:0 0 14px;display:flex;flex-direction:column;gap:10px}
+  .contact-list i{margin-right:8px;color:var(--brand)}
+  .contact-list a{color:#ddd}
+  .contact-list a:hover{color:#fff}
+  .hours-label{display:block;font-size:13px;color:#aaa;margin-bottom:2px;text-transform:uppercase}
+  .hours-value{color:#eee}
+  .footer-bottom{border-top:1px solid #222;margin-top:40px;padding:18px 0;font-size:13px;color:#999}
+  .footer-bottom-inner{display:flex;align-items:center;justify-content:space-between;gap:20px}
+  .footer-bottom a{color:#999;margin-left:14px}
+  .footer-bottom a:hover{color:#fff}
+</style>
+</head>
+<body>
+
+<!-- ===== Announcement ===== -->
+<div class="announce" role="region" aria-label="Announcement">
+  <div class="container announce-inner">
+    <div>Congratulations to our talented winemakers—medal winners at the 2025 Garden State Amateur Wine Challenge, including a <strong>“Best Red”</strong> gold honor!</div>
+    <div><a href="#">Already have an account? Log in</a></div>
+  </div>
+</div>
+
+<!-- ===== Header (same as home) ===== -->
+<header>
+  <div class="container bar">
+    <a class="brand" href="/" aria-label="Make Wine With Us — Home">
+      <img src="https://d34hmiuaex7c0.cloudfront.net/3719/uploads/cmaspages/gallery/1672135833219.png" alt="Make Wine With Us logo" />
+    </a>
+
+    <label class="hamburger" for="nav-toggle" aria-label="Toggle menu">☰ Menu</label>
+    <input id="nav-toggle" type="checkbox" aria-hidden="true"/>
+
+    <nav aria-label="Primary">
+      <ul class="nav" id="nav">
+        <li><a href="#">Winemaking Process</a></li>
+        <li><a href="#">Regions</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">FAQs</a></li>
+        <li><a href="#" aria-current="page">Events</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="actions">
+      <a class="phone" href="tel:+12018769463" aria-label="Call Make Wine With Us">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 3.09 5.18 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.72c.12.9.31 1.77.57 2.6a2 2 0 0 1-.45 2.11L9 10a16 16 0 0 0 5 5l.57-.57a2 2 0 0 1 2.11-.45c.83.26 1.7.45 2.6.57A2 2 0 0 1 22 16.92z"/></svg>
+        (201) 876-9463
+      </a>
+
+      <div class="social" aria-label="Social links">
+        <a href="https://www.facebook.com/MakeWineWithUs" aria-label="Facebook" title="Facebook" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.57 9.87v-6.99H7.9V12h2.53V9.8c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.22.2 2.22.2v2.44h-1.25c-1.24 0-1.62.77-1.62 1.56V12h2.76l-.44 2.88h-2.32v6.99A10 10 0 0 0 22 12"/></svg>
+        </a>
+        <a href="https://www.instagram.com/makewinewithus/" aria-label="Instagram" title="Instagram" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3zm5 3.5A5.5 5.5 0 1 1 6.5 13 5.5 5.5 0 0 1 12 7.5m0 2A3.5 3.5 0 1 0 15.5 13 3.5 3.5 0 0 0 12 9.5m6.25-3.5a1.25 1.25 0 1 1-1.25 1.25A1.25 1.25 0 0 1 18.25 6z"/></svg>
+        </a>
+      </div>
+
+      <a class="btn ghost" href="#">Create an Account</a>
+      <a class="btn primary" href="#">Make Wine Now</a>
+    </div>
+  </div>
+</header>
+
+<main class="events-page">
+  <div class="container">
+    <h1 class="events-heading">Check Out Our Upcoming Events</h1>
+
+    <div class="events-grid">
+      <!-- LEFT: Main list -->
+      <section class="events-main stack-12">
+        <!-- Example event card (duplicate for more items) -->
+        <article class="event-card">
+          <div class="event-media">
+            <div class="media-16x9">
+              <img src="https://d34hmiuaex7c0.cloudfront.net/3719/uploads/class_course_featured_1752156232315.png" alt="Event image">
+            </div>
+          </div>
+
+          <div>
+            <h3 class="event-title">The Boys Are Back in Town</h3>
+            <div class="event-meta">09/13/2025 · 6:30 PM</div>
+            <p class="event-desc">
+              Get ready to dance the night away at The Boys Are Back in Town at Make Wine With Us in Wallington, NJ!
+              Enjoy a lively night of swing, doo-wop, and fun.
+            </p>
+          </div>
+
+          <div>
+            <a class="btn primary pill" href="#">Register Now</a>
+          </div>
+        </article>
+
+        <!-- Add more <article class="event-card">…</article> here as needed -->
+      </section>
+
+      <!-- RIGHT: Aside sections -->
+      <aside class="events-aside">
+        <!-- Tasting Events (same layout as For Wine Makers) -->
+        <section class="side-card">
+          <h3 class="side-title">Tasting Events</h3>
+
+          <article class="side-row">
+            <div class="side-row__media media-16x9">
+              <img src="https://d34hmiuaex7c0.cloudfront.net/3719/uploads/class_course_featured_1729169935335.png" alt="Thursday Night Tasting">
+            </div>
+            <div class="side-row__body">
+              <h4 class="side-row__title">Thursday Night Tasting</h4>
+              <a class="btn primary pill btn-sm" href="#">Register Now</a>
+            </div>
+          </article>
+
+          <article class="side-row">
+            <div class="side-row__media media-16x9">
+              <img src="https://d34hmiuaex7c0.cloudfront.net/3719/uploads/class_course_featured_1729609114162.png" alt="Barrel Tasting">
+            </div>
+            <div class="side-row__body">
+              <h4 class="side-row__title">Barrel Tasting</h4>
+              <a class="btn primary pill btn-sm" href="#">Register Now</a>
+            </div>
+          </article>
+        </section>
+
+        <!-- Special Events -->
+        <section class="side-card">
+          <h3 class="side-title">Special Events</h3>
+          <div class="side-empty">
+            No special events are on the calendar right now — check back soon as new experiences are being poured.
+          </div>
+        </section>
+
+        <!-- For Wine Makers -->
+        <section class="side-card">
+          <h3 class="side-title">For Wine Makers</h3>
+
+          <article class="side-row">
+            <div class="side-row__media media-16x9">
+              <img src="https://d34hmiuaex7c0.cloudfront.net/3719/uploads/class_course_featured_1729608675305.png" alt="Crushing">
+            </div>
+            <div class="side-row__body">
+              <h4 class="side-row__title">Crushing</h4>
+              <a href="/coming-soon" class="btn pill btn-soon btn-sm">Dates Coming Soon</a>
+            </div>
+          </article>
+
+          <article class="side-row">
+            <div class="side-row__media media-16x9">
+              <img src="https://d34hmiuaex7c0.cloudfront.net/3719/uploads/class_course_featured_1729608787583.png" alt="Pressing">
+            </div>
+            <div class="side-row__body">
+              <h4 class="side-row__title">Pressing</h4>
+              <a href="/coming-soon" class="btn pill btn-soon btn-sm">Dates Coming Soon</a>
+            </div>
+          </article>
+
+          <article class="side-row">
+            <div class="side-row__media media-16x9">
+              <img src="https://d34hmiuaex7c0.cloudfront.net/3719/uploads/class_course_featured_1729608924741.png" alt="Wine Racking">
+            </div>
+            <div class="side-row__body">
+              <h4 class="side-row__title">Wine Racking</h4>
+              <a class="btn primary pill btn-sm" href="#">Register Now</a>
+            </div>
+          </article>
+
+          <article class="side-row">
+            <div class="side-row__media media-16x9">
+              <img src="https://d34hmiuaex7c0.cloudfront.net/3719/uploads/class_course_featured_1729662222748.png" alt="Bottling">
+            </div>
+            <div class="side-row__body">
+              <h4 class="side-row__title">Bottling</h4>
+              <a class="btn primary pill btn-sm" href="#">Register Now</a>
+            </div>
+          </article>
+        </section>
+      </aside>
+    </div>
+  </div>
+</main>
+
+
+
+<!-- ===== Footer (same as home, with FB + IG only) ===== -->
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-col">
+      <h3 class="foot-title">About Make Wine With Us</h3>
+      <p class="footer-text">
+        Craft small-batch wines from premium grapes with guidance from American Wine Society instructors. Choose, crush, age, and bottle — and take your vintage home.
+      </p>
+      <a href="#" class="btn primary footer-cta">Become a Winemaker</a>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/makewinewithus/" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.facebook.com/MakeWineWithUs" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h3 class="foot-title">Explore</h3>
+      <ul class="foot-links">
+        <li><a href="#">About</a></li><li><a href="#">Winemaking Process</a></li>
+        <li><a href="#">Wines You Can Make</a></li><li><a href="#">Regions</a></li>
+        <li><a href="#">Blog</a></li><li><a href="#">FAQs</a></li>
+        <li><a href="#">Events</a></li><li><a href="#">Private Events</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h3 class="foot-title">Have a Question?</h3>
+      <ul class="contact-list">
+        <li><i class="fas fa-map-marker-alt"></i>21 Curie Avenue, Wallington, NJ 07057</li>
+        <li><i class="fas fa-phone-alt"></i><a href="tel:+12018769463">(201) 876-9463</a></li>
+        <li><i class="fas fa-envelope"></i><a href="mailto:info@makewinewithus.com">info@makewinewithus.com</a></li>
+      </ul>
+      <div class="hours">
+        <span class="hours-label">Hours</span>
+        <span class="hours-value">Mon–Fri 12–8pm · Sat 10–6pm</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="container footer-bottom-inner">
+      <p>© 2025 Make Wine With Us. All rights reserved.</p>
+      <div class="foot-legal"><a href="#">Privacy</a><a href="#">Terms</a></div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
+
+
+
+
+
+
